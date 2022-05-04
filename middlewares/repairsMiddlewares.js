@@ -1,4 +1,8 @@
+//Models
 const { Repair } = require('../models/repairModel');
+
+//Utils
+const { AppError } = require('../utils/appError');
 
 const repairExists = async (req, res, next) => {
   try {
@@ -7,10 +11,12 @@ const repairExists = async (req, res, next) => {
     const repair = await Repair.findOne({ where: { id, status: 'pending' } });
 
     if (!repair) {
-      return res.status(404).json({
-        status: 'error',
-        message: 'spare part not available',
-      });
+      return next(new AppError('No repair found with the given id', 404));
+
+      // return res.status(404).json({
+      //   status: 'error',
+      //   message: 'spare part not available',
+      // });
     }
 
     req.repairData = repair;

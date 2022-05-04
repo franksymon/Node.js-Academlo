@@ -13,6 +13,13 @@ const Repair = db.define('repairs', {
     allowNull: false,
     type: DataTypes.DATEONLY,
   },
+  computerNumber: {
+    allowNull: false,
+    type: DataTypes.INTEGER,
+  },
+  comments: {
+    type: DataTypes.STRING,
+  },
   userId: {
     type: DataTypes.INTEGER,
     allowNull: false,

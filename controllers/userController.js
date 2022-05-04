@@ -1,62 +1,46 @@
+//Models
 const { User } = require('../models/userModel');
 
-const getAlluser = async (req, res) => {
-  try {
-    const users = await User.findAll();
+//Utils
+const { catchAsync } = require('../utils/catchAsync');
 
-    res.status(200).json({ users });
-  } catch (error) {
-    console.log(error);
-  }
-};
+const getAlluser = catchAsync(async (req, res) => {
+  const users = await User.findAll();
 
-const createUser = async (req, res) => {
-  try {
-    const { name, email, password, role } = req.body;
+  res.status(200).json({ users });
+});
 
-    const newUser = await User.create({ name, email, password, role });
+const createUser = catchAsync(async (req, res) => {
+  const { name, email, password, role } = req.body;
 
-    res.status(201).json({ newUser });
-  } catch (error) {
-    console.log(error);
-  }
-};
+  const newUser = await User.create({ name, email, password, role });
 
-const getUserId = async (req, res) => {
-  try {
-    const { userData } = req;
+  res.status(201).json({ newUser });
+});
 
-    res.status(200).json({ userData });
-  } catch (error) {
-    console.log(error);
-  }
-};
+const getUserId = catchAsync(async (req, res) => {
+  const { userData } = req;
 
-const updateUser = async (req, res) => {
-  try {
-    const { userData } = req;
+  res.status(200).json({ userData });
+});
 
-    const { name, email } = req.body;
+const updateUser = catchAsync(async (req, res) => {
+  const { userData } = req;
 
-    await userData.update({ name, email });
+  const { name, email } = req.body;
 
-    res.status(201).json({ status: 'success' });
-  } catch (error) {
-    console.log(error);
-  }
-};
+  await userData.update({ name, email });
 
-const deleteUser = async (req, res) => {
-  try {
-    const { userData } = req;
+  res.status(201).json({ status: 'success' });
+});
 
-    await userData.update({ status: 'disabled' });
+const deleteUser = catchAsync(async (req, res) => {
+  const { userData } = req;
 
-    res.status(201).json({ status: 'success' });
-  } catch (error) {
-    console.log(error);
-  }
-};
+  await userData.update({ status: 'disabled' });
+
+  res.status(201).json({ status: 'success' });
+});
 
 module.exports = {
   getAlluser,

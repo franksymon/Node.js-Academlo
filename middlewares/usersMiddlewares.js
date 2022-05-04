@@ -1,4 +1,8 @@
+//Models
 const { User } = require('../models/userModel');
+
+//Utils
+const { AppError } = require('../utils/appError');
 
 const userExists = async (req, res, next) => {
   try {
@@ -7,10 +11,12 @@ const userExists = async (req, res, next) => {
     const user = await User.findOne({ where: { id } });
 
     if (!user) {
-      return res.status(404).json({
-        status: 'erros',
-        message: 'User not found given that id',
-      });
+      return next(new AppError('User does not exist with given Id', 404));
+
+      // return res.status(404).json({
+      //   status: 'erros',
+      //   message: 'User not found given that id',
+      // });
     }
 
     req.userData = user;
