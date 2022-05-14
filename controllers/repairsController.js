@@ -5,21 +5,27 @@ const { User } = require('../models/userModel');
 //Utils
 const { catchAsync } = require('../utils/catchAsync');
 
-const getAllPending = catchAsync(async (req, res) => {
-  const repairs = await Repair.findAll({
-    where: { status: 'pending' },
-    include: [{ model: User }],
-  });
+const getAllRepair = catchAsync(async (req, res, next) => {
+  const query = req.query.new;
+
+  const repairs = query
+    ? await Repair.findAll({ where: { status: 'completed' } })
+    : await Repair.findAll({
+        where: { status: 'pending' },
+        include: [{ model: User, attributes: ['id', 'name', 'email'] }],
+      });
 
   res.status(200).json({ repairs });
 });
 
-const createRepair = catchAsync(async (req, res) => {
-  const { date, userId, computerNumber, comments } = req.body;
+const createRepair = catchAsync(async (req, res, next) => {
+  const { date, computerNumber, comments } = req.body;
+
+  const { sessionUser } = req;
 
   const newRepair = await Repair.create({
     date,
-    userId,
+    userId: sessionUser.id,
     computerNumber,
     comments,
   });
@@ -27,13 +33,13 @@ const createRepair = catchAsync(async (req, res) => {
   res.status(201).json({ newRepair });
 });
 
-const getRepairId = catchAsync(async (req, res) => {
+const getRepairId = catchAsync(async (req, res, next) => {
   const { repairData } = req;
 
   res.status(200).json({ repairData });
 });
 
-const updateRepair = catchAsync(async (req, res) => {
+const updateRepair = catchAsync(async (req, res, next) => {
   const { repairData } = req;
 
   await repairData.update({ status: 'completed' });
@@ -41,7 +47,7 @@ const updateRepair = catchAsync(async (req, res) => {
   res.status(200).json({ status: 'success' });
 });
 
-const deleteRepair = catchAsync(async (req, res) => {
+const deleteRepair = catchAsync(async (req, res, next) => {
   const { repairData } = req;
 
   await repairData.update({ status: 'cancelled' });
@@ -50,7 +56,7 @@ const deleteRepair = catchAsync(async (req, res) => {
 });
 
 module.exports = {
-  getAllPending,
+  getAllRepair,
   getRepairId,
   createRepair,
   updateRepair,

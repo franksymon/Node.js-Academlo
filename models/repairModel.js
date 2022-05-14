@@ -11,7 +11,7 @@ const Repair = db.define('repairs', {
   },
   date: {
     allowNull: false,
-    type: DataTypes.DATEONLY,
+    type: DataTypes.DATE,
   },
   computerNumber: {
     allowNull: false,
@@ -19,6 +19,7 @@ const Repair = db.define('repairs', {
   },
   comments: {
     type: DataTypes.STRING,
+    allowNull: false,
   },
   userId: {
     type: DataTypes.INTEGER,

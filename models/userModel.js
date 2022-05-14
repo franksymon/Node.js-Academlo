@@ -24,11 +24,11 @@ const User = db.define('user', {
   },
   role: {
     type: DataTypes.STRING,
-    allowNull: false,
+    defaultValue: 'normal',
   },
   status: {
     type: DataTypes.STRING,
-    defaultValue: 'available',
+    defaultValue: 'active',
   },
 });
 

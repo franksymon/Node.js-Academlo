@@ -6,22 +6,33 @@ const router = express.Router();
 const { repairExists } = require('../middlewares/repairsMiddlewares');
 const {
   createRepairValidations,
-  checkRepairValidations,
-} = require('../middlewares/validationsRepairsMiddlewares');
+  checkValidations,
+} = require('../middlewares/validationsMiddlewares');
+const {
+  protectToken,
+  protectAdmin,
+} = require('../middlewares/authMiddlewares');
 
 //Controller
 const {
-  getAllPending,
+  getAllRepair,
   getRepairId,
   createRepair,
   updateRepair,
   deleteRepair,
 } = require('../controllers/repairsController');
 
-router
-  .route('/')
-  .get(getAllPending)
-  .post(createRepairValidations, checkRepairValidations, createRepair);
+router.post(
+  '/',
+  protectToken,
+  createRepairValidations,
+  checkValidations,
+  createRepair
+);
+
+router.use(protectToken, protectAdmin);
+
+router.get('/', getAllRepair);
 
 router
   .use('/:id', repairExists)

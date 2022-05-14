@@ -6,28 +6,39 @@ const router = express.Router();
 const { userExists } = require('../middlewares/usersMiddlewares');
 const {
   createUserValidations,
-  checkUserValidations,
-} = require('../middlewares/validationsUserMiddlewares');
+  checkValidations,
+} = require('../middlewares/validationsMiddlewares');
+const {
+  protectToken,
+  protectAdmin,
+  protectAccountOwne,
+} = require('../middlewares/authMiddlewares');
 
 //Controllers
 const {
-  getAlluser,
-  getUserId,
+  getAllUsers,
+  getUserById,
   createUser,
   updateUser,
   deleteUser,
+  login,
 } = require('../controllers/userController');
 
-router
-  .route('/')
-  .get(getAlluser)
-  .post(createUserValidations, checkUserValidations, createUser);
+// Endpoints
+
+router.post('/', createUserValidations, checkValidations, createUser);
+
+router.post('/login', login);
+
+router.use(protectToken);
+
+router.get('/', protectAdmin, getAllUsers);
 
 router
-  .use('/:id', userExists)
+  //.use('/:id', userExists)
   .route('/:id')
-  .get(getUserId)
-  .patch(updateUser)
-  .delete(deleteUser);
+  .get(protectAdmin, userExists, getUserById)
+  .patch(protectAccountOwne, userExists, updateUser)
+  .delete(protectAccountOwne, userExists, deleteUser);
 
 module.exports = { usersRouter: router };
